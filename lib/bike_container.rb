@@ -35,7 +35,3 @@ module BikeContainer
 		bikes.reject {|bike| bike.broken? }
 	end
 end
-
-
-
-# if there are bikes then be bikes
