@@ -22,15 +22,15 @@ end
 
 describe DockingStation do
 
-	let (:station) { DockingStation.new(:capacity => 123) }
+	let (:station) { DockingStation.new(:capacity => 20) }
 	let (:bike) { Bike.new }
 
 	def fill_station(station) 
-		123.times { station.dock(Bike.new) }
+		20.times { station.dock(Bike.new) }
 	end
 
 	it "should allow setting default capacity on initialising" do
-		expect(station.capacity).to eq(123)
+		expect(station.capacity).to eq(20)
 	end
 
 	it "should accept a bike" do
