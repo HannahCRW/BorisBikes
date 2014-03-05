@@ -20,7 +20,15 @@ class DockingStation
 	def initialize(options = {})
 		self.capacity = options.fetch(:capacity, capacity)
 	end
+	def dock(bike)
+		raise "There is no more room for bikes" if full?
+		bikes << bike
+	end
+	def release(bike)
+		raise "This bike is broken" if bike.broken?
+	end
 end
+
 
 class Van
 	include BikeContainer
@@ -29,9 +37,17 @@ class Van
 	end
 end
 
+
 class Garage
 	include BikeContainer
 	def initialize(options = {})
 		self.capacity = options.fetch(:capacity, capacity)
+	end
+	def accept(bike)
+		bike.fix
+		dock(bike)
+	end
+	def dock(bike)
+		raise "This bike is not broken" if !bike.broken?
 	end
 end

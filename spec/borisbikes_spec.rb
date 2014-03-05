@@ -23,6 +23,7 @@ end
 describe DockingStation do
 
 	let (:station) { DockingStation.new(:capacity => 20) }
+	let (:van) { Van.new(:capacity => 10) }
 	let (:bike) { Bike.new }
 
 	def fill_station(station) 
@@ -39,11 +40,11 @@ describe DockingStation do
 		expect(station.bike_count).to eq(1)
 	end
 
-	it "should release a bike" do
-		station.dock(bike)
-		station.release(bike)
-		expect(station.bike_count).to eq(0)
-	end
+	# it "should release a bike" do
+	# 	station.dock(bike)
+	# 	station.release(bike)
+	# 	expect(station.bike_count).to eq(0)
+	# end
 
 	it "should know when it's full" do
 		expect(station).not_to be_full
@@ -63,7 +64,75 @@ describe DockingStation do
 		station.dock(broken_bike)
 		expect(station.available_bikes).to eq([working_bike])
 	end
+
+	it "should only release broken bikes only to Van" do
+		expect(van.dock(bike)) if bike.broken? 
+		station.release(bike)
+	end
+
+	it "should raise an error if User tries to take broken bike" do
+		bike.broken?
+		expect(lambda {station.release(bike)}).to raise_error(RuntimeError) if bike.broken?
+	end
 end
+
+
+describe Van do
+
+	let (:van) { Van.new(:capacity => 10) }
+	let (:bike) { Bike.new }
+
+	it "should have a capacity of 10 bikes" do
+		expect(van.capacity).to eq(10)
+	end
+
+	it "should accept bikes" do
+		expect(van.bike_count).to eq(0)
+		van.dock(bike)
+		expect(van.bike_count).to eq(1)
+	end
+
+	it "expects that bikes received from DockingStation are broken" do 
+		bike.break
+		expect(bike.broken?).to be_true
+	end
+
+	it "expects that bikes received from Garage are fixed" do
+		bike.fix
+		expect(bike.broken?).to be_false
+	end
+end
+
+
+describe Garage do
+
+	let (:garage) { Garage.new(:capacity => 20) }
+	let (:van) { Van.new(:capacity => 10) }
+	let (:bike) { Bike.new }
+
+
+	it "should have a capacity of 20 bikes" do
+		expect(garage.capacity).to eq(20)
+	end
+
+	it "should accept broken bikes" do
+		expect(garage.bike_count).to eq(0)
+		bike.break
+		garage.dock(bike) if bike.broken?
+		expect(garage.bike_count).to eq(1)
+	end
+
+	it "should accept only broken bikes" do 
+		!bike.broken?
+		expect(lambda {garage.dock(bike)}).to raise_error(RuntimeError)
+	end
+
+	it "should fix bikes" do
+		bike.fix
+		expect(bike.broken?).to be_false
+	end
+end
+
 
 class ContainerHolder; include BikeContainer; end
 

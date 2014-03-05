@@ -1,6 +1,6 @@
 module BikeContainer
 
-	DEFAULT_CAPACITY = 20 
+	DEFAULT_CAPACITY = 20
 
 	def bikes
 		@bikes ||= []
@@ -23,9 +23,9 @@ module BikeContainer
 		bikes << bike
 	end
 
-	def release(bike)
-		bikes.delete(bike)
-	end
+	# def release(bike)
+	# 	bikes.delete(bike)
+	# end
 
 	def full?
 		bike_count == capacity
@@ -34,4 +34,14 @@ module BikeContainer
 	def available_bikes
 		bikes.reject {|bike| bike.broken? }
 	end
+
+	def release_to(destinatiion)
+		if bike.broken?
+			Van << bike
+		else
+			User << bike
+		end
+		bikes.delete(bike)
+	end
+		
 end
