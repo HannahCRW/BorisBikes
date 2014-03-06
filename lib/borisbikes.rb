@@ -27,6 +27,10 @@ class DockingStation
 	def release(bike)
 		raise "This bike is broken" if bike.broken?
 	end
+	def empty
+		self.capacity == 0
+		raise "There are no available bikes" if @capacity == 0
+	end
 end
 
 
@@ -49,5 +53,6 @@ class Garage
 	end
 	def dock(bike)
 		raise "This bike is not broken" if !bike.broken?
+		bikes << bike
 	end
 end

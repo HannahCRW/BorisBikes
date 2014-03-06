@@ -74,6 +74,10 @@ describe DockingStation do
 		bike.broken?
 		expect(lambda {station.release(bike)}).to raise_error(RuntimeError) if bike.broken?
 	end
+
+	it "should raise an error if User tries to take bike when none are available" do
+		expect(lambda {station.release(bike)}).to raise_error(RuntimeError) if station.empty
+	end
 end
 
 
@@ -116,9 +120,9 @@ describe Garage do
 	end
 
 	it "should accept broken bikes" do
-		expect(garage.bike_count).to eq(0)
 		bike.break
-		garage.dock(bike) if bike.broken?
+		expect(garage.bike_count).to eq(0)
+		garage.dock(bike)
 		expect(garage.bike_count).to eq(1)
 	end
 
